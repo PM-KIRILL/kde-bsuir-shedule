@@ -16,7 +16,7 @@
   [Константин Бетеня (Konstantsin Betenya)](https://github.com/vazonhub) — создатель проекта [Bsuir Time (bsuir-schedule)](https://github.com/vazonhub/bsuir-schedule).  
   Оригинальный репозиторий: **[https://github.com/vazonhub/bsuir-schedule](https://github.com/vazonhub/bsuir-schedule)**.
 - **Автор порта под KDE Plasma 6:**  
-  [PM-KIRILL](https://github.com/PM-KIRILL) — переработка интерфейса под QML/Kirigami, интеграция с KDE Plasma 6 Desktop & Panel.
+  [PM-KIRILL](https://github.com/PM-KIRILL) (Telegram: [@pmkirill0](https://t.me/pmkirill0)) — переработка интерфейса под QML/Kirigami, интеграция с KDE Plasma 6 Desktop & Panel.
 
 ---
 
