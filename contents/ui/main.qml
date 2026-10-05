@@ -22,7 +22,25 @@ PlasmoidItem {
         ? Plasmoid.configuration.groupNumber.trim()
         : "310101"
     readonly property int cfgSubgroup: Plasmoid.configuration.subgroup || 0
+    readonly property string cfgLanguage: Plasmoid.configuration.language || "auto"
+    readonly property string lang: Logic.getLanguage(root.cfgLanguage, Qt.locale ? Qt.locale().name : "ru")
+
     readonly property int cfgThemeMode: Plasmoid.configuration.themeMode || 0
+    readonly property string cfgIconChoice: Plasmoid.configuration.iconChoice || "bsuir"
+    readonly property bool cfgShowAvatars: Plasmoid.configuration.showAvatars !== undefined ? Plasmoid.configuration.showAvatars : true
+    readonly property bool cfgShowTypeBadge: Plasmoid.configuration.showTypeBadge !== undefined ? Plasmoid.configuration.showTypeBadge : true
+    readonly property bool cfgShowNotes: Plasmoid.configuration.showNotes !== undefined ? Plasmoid.configuration.showNotes : true
+
+    readonly property var colorOverrides: {
+        return {
+            colorLK: Plasmoid.configuration.colorLK ? Plasmoid.configuration.colorLK.toString() : "#3FB36F",
+            colorLR: Plasmoid.configuration.colorLR ? Plasmoid.configuration.colorLR.toString() : "#F08A24",
+            colorPZ: Plasmoid.configuration.colorPZ ? Plasmoid.configuration.colorPZ.toString() : "#8E5CD9",
+            colorExam: Plasmoid.configuration.colorExam ? Plasmoid.configuration.colorExam.toString() : "#FF3B30",
+            colorConsultation: Plasmoid.configuration.colorConsultation ? Plasmoid.configuration.colorConsultation.toString() : "#32ADE6"
+        };
+    }
+
     readonly property int cfgAutoRefreshInterval: (Plasmoid.configuration.autoRefreshInterval !== undefined)
         ? Plasmoid.configuration.autoRefreshInterval
         : 60
@@ -35,21 +53,23 @@ PlasmoidItem {
     onCfgAutoRefreshIntervalChanged: autoRefreshTimer.restart()
 
     // Tooltip
-    toolTipMainText: i18n("Расписание БГУИР (%1)", root.cfgGroupNumber)
+    toolTipMainText: Logic.tr("scheduleTitle", root.lang) + " (" + root.cfgGroupNumber + ")"
     toolTipSubText: {
-        if (!root.scheduleData) return i18n("Загрузка данных...");
+        if (!root.scheduleData) return Logic.tr("loading", root.lang);
         var disp = Logic.resolveDisplay(
             root.scheduleData,
             root.currentWeek,
             root.cfgSubgroup,
-            root.cfgShowPastLessons
+            root.cfgShowPastLessons,
+            root.colorOverrides,
+            root.lang
         );
         if (disp.holidayName) return "⭐ " + disp.holidayName;
         if (disp.lessons && disp.lessons.length > 0) {
             var l = disp.lessons[0];
             return l.startTime + " " + l.subject + (l.auditoryText || "");
         }
-        return disp.allDone ? i18n("Все пары на сегодня завершены") : i18n("Занятий нет");
+        return disp.allDone ? Logic.tr("allDone", root.lang) : Logic.tr("noClasses", root.lang);
     }
 
     // Theme palette
@@ -66,7 +86,7 @@ PlasmoidItem {
     // Context actions
     Plasmoid.contextualActions: [
         PlasmaCore.Action {
-            text: i18n("Обновить расписание")
+            text: Logic.tr("refresh", root.lang)
             icon.name: "view-refresh"
             onTriggered: root.refresh()
         }
@@ -100,7 +120,6 @@ PlasmoidItem {
         xhr.timeout = 10000;
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
-                console.log("[BSUIR Widget] Week response status:", xhr.status, "body:", xhr.responseText);
                 if (xhr.status >= 200 && xhr.status < 300) {
                     var week = parseInt(xhr.responseText.trim(), 10);
                     if (!isNaN(week) && week >= 1 && week <= 4) {
@@ -108,23 +127,21 @@ PlasmoidItem {
                         return;
                     }
                 }
-                if (errorCallback) errorCallback("Не удалось определить текущую учебную неделю");
+                if (errorCallback) errorCallback(Logic.tr("errorServer", root.lang, xhr.status));
             }
         };
         xhr.ontimeout = function() {
-            console.warn("[BSUIR Widget] Week request timed out");
-            if (errorCallback) errorCallback("Таймаут подключения к серверу БГУИР");
+            if (errorCallback) errorCallback(Logic.tr("errorTimeout", root.lang));
         };
         xhr.onerror = function() {
-            console.warn("[BSUIR Widget] Week request network error");
-            if (errorCallback) errorCallback("Ошибка сети при запросе текущей недели");
+            if (errorCallback) errorCallback(Logic.tr("errorNetwork", root.lang));
         };
         xhr.send();
     }
 
     function fetchSchedule(groupNumber, callback, errorCallback) {
         if (!groupNumber || groupNumber.trim() === "") {
-            if (errorCallback) errorCallback("Укажите номер группы в настройках виджета");
+            if (errorCallback) errorCallback(Logic.tr("errorEmptyGroup", root.lang));
             return;
         }
 
@@ -135,38 +152,33 @@ PlasmoidItem {
         xhr.timeout = 15000;
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
-                console.log("[BSUIR Widget] Schedule response status:", xhr.status, "length:", xhr.responseText ? xhr.responseText.length : 0);
                 if (xhr.status >= 200 && xhr.status < 300) {
                     try {
                         var data = JSON.parse(xhr.responseText);
                         callback(data);
                     } catch (e) {
-                        console.warn("[BSUIR Widget] JSON parse error:", e);
-                        if (errorCallback) errorCallback("Ошибка разбора ответа сервера");
+                        if (errorCallback) errorCallback("JSON parse error");
                     }
                     return;
                 }
                 if (xhr.status === 404) {
-                    if (errorCallback) errorCallback("Группа " + groupNumber + " не найдена");
+                    if (errorCallback) errorCallback(Logic.tr("errorNotFound", root.lang, groupNumber));
                     return;
                 }
-                if (errorCallback) errorCallback("Ошибка сервера БГУИР (код " + xhr.status + ")");
+                if (errorCallback) errorCallback(Logic.tr("errorServer", root.lang, xhr.status));
             }
         };
         xhr.ontimeout = function() {
-            console.warn("[BSUIR Widget] Schedule request timed out");
-            if (errorCallback) errorCallback("Таймаут загрузки расписания");
+            if (errorCallback) errorCallback(Logic.tr("errorTimeout", root.lang));
         };
         xhr.onerror = function() {
-            console.warn("[BSUIR Widget] Schedule request network error");
-            if (errorCallback) errorCallback("Не удалось подключиться к серверу БГУИР");
+            if (errorCallback) errorCallback(Logic.tr("errorNetwork", root.lang));
         };
         xhr.send();
     }
 
     function refresh() {
         var group = root.cfgGroupNumber;
-        console.log("[BSUIR Widget] Refreshing schedule for group:", group);
         root.isLoading = true;
         root.errorMessage = "";
 
@@ -175,7 +187,6 @@ PlasmoidItem {
             try { Plasmoid.configuration.cachedCurrentWeek = week; } catch(e) {}
 
             fetchSchedule(group, function(data) {
-                console.log("[BSUIR Widget] Fetched schedule for group:", group, "Days:", Object.keys(data.schedules || {}));
                 root.scheduleData = data;
                 root.isLoading = false;
                 root.errorMessage = "";
@@ -192,7 +203,6 @@ PlasmoidItem {
                 root.errorMessage = schedErr;
             });
         }, function(weekErr) {
-            // Even if week fetch fails, try to fetch schedule with fallback week
             fetchSchedule(group, function(data) {
                 root.scheduleData = data;
                 root.isLoading = false;
@@ -231,6 +241,9 @@ PlasmoidItem {
         subgroup: root.cfgSubgroup
         showPastLessons: root.cfgShowPastLessons
         timerDate: root.currentTimerDate
+        colorOverrides: root.colorOverrides
+        lang: root.lang
+        iconChoice: root.cfgIconChoice
         pal: root.pal
     }
 
@@ -241,6 +254,11 @@ PlasmoidItem {
         subgroup: root.cfgSubgroup
         showPastLessons: root.cfgShowPastLessons
         timerDate: root.currentTimerDate
+        colorOverrides: root.colorOverrides
+        lang: root.lang
+        showAvatars: root.cfgShowAvatars
+        showTypeBadge: root.cfgShowTypeBadge
+        showNotes: root.cfgShowNotes
         isLoading: root.isLoading
         errorMessage: root.errorMessage
         pal: root.pal

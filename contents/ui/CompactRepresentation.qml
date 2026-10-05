@@ -13,6 +13,9 @@ Item {
     property string groupNumber: ""
     property int subgroup: 0
     property bool showPastLessons: false
+    property var colorOverrides: null
+    property string lang: "ru"
+    property string iconChoice: "bsuir"
     property var pal: ({})
     property var timerDate: null
 
@@ -22,7 +25,9 @@ Item {
             compactRoot.scheduleData,
             compactRoot.currentWeek,
             compactRoot.subgroup,
-            compactRoot.showPastLessons
+            compactRoot.showPastLessons,
+            compactRoot.colorOverrides,
+            compactRoot.lang
         );
     }
 
@@ -43,16 +48,21 @@ Item {
         anchors.centerIn: parent
         spacing: 4
 
-        // App/Calendar Icon
+        // App/Calendar/Custom Icon
         Kirigami.Icon {
             id: icon
             Layout.preferredWidth: Math.min(compactRoot.width, compactRoot.height) - 4
             Layout.preferredHeight: Layout.preferredWidth
-            source: Qt.resolvedUrl("../icons/icon.png")
+            source: {
+                if (!compactRoot.iconChoice || compactRoot.iconChoice === "bsuir") {
+                    return Qt.resolvedUrl("../icons/icon.png");
+                }
+                return compactRoot.iconChoice;
+            }
             fallback: "view-calendar-timeline"
         }
 
-        // Small badge with week or next lesson time if panel is wide
+        // Small pill badge with week or next lesson time if panel is wide
         Rectangle {
             visible: compactRoot.width > 70 && !!compactRoot.nextLesson
             Layout.preferredHeight: 18
@@ -63,7 +73,7 @@ Item {
             Text {
                 id: badgeText
                 anchors.centerIn: parent
-                text: compactRoot.nextLesson ? compactRoot.nextLesson.startTime : ("W" + compactRoot.currentWeek)
+                text: compactRoot.nextLesson ? compactRoot.nextLesson.startTime : (Logic.tr("weekLabel", compactRoot.lang)[0] + compactRoot.currentWeek)
                 font.pixelSize: 10
                 font.bold: true
                 color: "#FFFFFF"

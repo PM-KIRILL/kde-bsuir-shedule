@@ -17,6 +17,12 @@ Item {
     property var pal: ({})
     property var timerDate: null
 
+    property string lang: "ru"
+    property var colorOverrides: null
+    property bool showAvatars: true
+    property bool showTypeBadge: true
+    property bool showNotes: true
+
     signal refreshRequested()
 
     Layout.minimumWidth: Math.max(280, Kirigami.Units.gridUnit * 16)
@@ -34,7 +40,9 @@ Item {
             root.scheduleData,
             root.currentWeek,
             root.subgroup,
-            root.showPastLessons
+            root.showPastLessons,
+            root.colorOverrides,
+            root.lang
         );
     }
 
@@ -66,7 +74,7 @@ Item {
                     spacing: 8
 
                     Text {
-                        text: root.displayInfo.groupName || root.groupNumber || i18n("Расписание")
+                        text: root.displayInfo.groupName || root.groupNumber || Logic.tr("scheduleTitle", root.lang)
                         font.pixelSize: 13
                         font.weight: Font.DemiBold
                         color: root.pal.textPrimary || "#FFFFFF"
@@ -88,7 +96,7 @@ Item {
                     spacing: 6
 
                     Text {
-                        text: i18n("Неделя %1", root.displayInfo.currentWeek || root.currentWeek || 1)
+                        text: Logic.tr("weekLabel", root.lang) + " " + (root.displayInfo.currentWeek || root.currentWeek || 1)
                         font.pixelSize: 11
                         color: root.pal.textSecondary || "#98989F"
                     }
@@ -118,7 +126,7 @@ Item {
                         }
 
                         QQC2.ToolTip.visible: refreshMouseArea.containsMouse
-                        QQC2.ToolTip.text: i18n("Обновить расписание")
+                        QQC2.ToolTip.text: Logic.tr("refresh", root.lang)
                         QQC2.ToolTip.delay: 300
 
                         MouseArea {
@@ -150,7 +158,7 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: i18n("Загрузка расписания...")
+                        text: Logic.tr("loading", root.lang)
                         font.pixelSize: 12
                         color: root.pal.textSecondary || "#98989F"
                     }
@@ -181,7 +189,7 @@ Item {
 
                     QQC2.Button {
                         Layout.alignment: Qt.AlignHCenter
-                        text: i18n("Повторить")
+                        text: Logic.tr("retry", root.lang)
                         onClicked: root.refreshRequested()
                     }
                 }
@@ -191,6 +199,7 @@ Item {
                     anchors.fill: parent
                     visible: !root.isLoading && (!root.errorMessage || root.displayInfo.hasData) && (root.displayInfo.holidayName || (root.displayInfo.lessons && root.displayInfo.lessons.length === 0))
                     pal: root.pal
+                    lang: root.lang
                     allDone: root.displayInfo.allDone
                     holidayName: root.displayInfo.holidayName || ""
                     dateLabel: root.displayInfo.dateLabel || ""
@@ -223,9 +232,11 @@ Item {
                             Layout.fillWidth: true
                             lesson: modelData
                             pal: root.pal
+                            lang: root.lang
                             compact: root.width < 320
-                            showNote: root.height >= 260
-                            showPhoto: root.width >= 300
+                            showNote: root.showNotes && root.height >= 260
+                            showPhoto: root.showAvatars && root.width >= 300
+                            showTypeBadge: root.showTypeBadge
                         }
                     }
 

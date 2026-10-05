@@ -12,8 +12,8 @@
     <entry name="subgroup" type="Int">
       <default>0</default>
     </entry>
-    <entry name="themeMode" type="Int">
-      <default>0</default>
+    <entry name="language" type="String">
+      <default>auto</default>
     </entry>
     <entry name="autoRefreshInterval" type="Int">
       <default>60</default>
@@ -26,6 +26,39 @@
     </entry>
     <entry name="cachedCurrentWeek" type="Int">
       <default>0</default>
+    </entry>
+  </group>
+
+  <group name="Appearance">
+    <entry name="themeMode" type="Int">
+      <default>0</default>
+    </entry>
+    <entry name="iconChoice" type="String">
+      <default>bsuir</default>
+    </entry>
+    <entry name="showAvatars" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="showTypeBadge" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="showNotes" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="colorLK" type="Color">
+      <default>#3FB36F</default>
+    </entry>
+    <entry name="colorLR" type="Color">
+      <default>#F08A24</default>
+    </entry>
+    <entry name="colorPZ" type="Color">
+      <default>#8E5CD9</default>
+    </entry>
+    <entry name="colorExam" type="Color">
+      <default>#FF3B30</default>
+    </entry>
+    <entry name="colorConsultation" type="Color">
+      <default>#32ADE6</default>
     </entry>
   </group>
 </kcfg>

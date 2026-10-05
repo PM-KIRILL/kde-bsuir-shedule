@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls as QQC2
+import "ScheduleLogic.js" as Logic
 
 Item {
     id: root
@@ -10,6 +11,8 @@ Item {
     property bool compact: false
     property bool showNote: true
     property bool showPhoto: true
+    property bool showTypeBadge: true
+    property string lang: "ru"
 
     implicitWidth: parent ? parent.width : 280
     implicitHeight: lesson.isMine ? contentRow.implicitHeight + 8 : otherSubgroupBox.implicitHeight + 8
@@ -56,7 +59,7 @@ Item {
                 Text {
                     id: subgroupBadge
                     visible: root.lesson.numSubgroup === 1 || root.lesson.numSubgroup === 2
-                    text: " " + root.lesson.numSubgroup + " п/г"
+                    text: " " + root.lesson.numSubgroup + " " + Logic.tr("subgroupShort", root.lang)
                     font.pixelSize: root.compact ? 9 : 10
                     font.weight: Font.Medium
                     color: root.lesson.typeColorHex || "#9A9A9E"
@@ -64,12 +67,12 @@ Item {
 
                 Text {
                     id: typeBadge
-                    visible: root.lesson.typeAbbrev && !root.compact
+                    visible: root.showTypeBadge && !!root.lesson.typeAbbrev && !root.compact
                     text: root.lesson.typeAbbrev
                     font.pixelSize: 9
                     font.weight: Font.Bold
                     color: root.lesson.typeColorHex || "#9A9A9E"
-                    opacity: 0.8
+                    opacity: 0.85
                 }
             }
 
@@ -146,7 +149,7 @@ Item {
 
                 Text {
                     visible: root.lesson.numSubgroup === 1 || root.lesson.numSubgroup === 2
-                    text: " " + root.lesson.numSubgroup + " п/г"
+                    text: " " + root.lesson.numSubgroup + " " + Logic.tr("subgroupShort", root.lang)
                     font.pixelSize: 9
                     font.weight: Font.Medium
                     color: root.lesson.typeColorHex || "#9A9A9E"
@@ -169,13 +172,18 @@ Item {
         var parts = [];
         if (root.lesson.subjectFullName) parts.push(root.lesson.subjectFullName);
         else if (root.lesson.subject) parts.push(root.lesson.subject);
-        if (root.lesson.typeAbbrev) parts.push("Тип: " + root.lesson.typeAbbrev);
-        if (root.lesson.teacherNames) parts.push("Преподаватель: " + root.lesson.teacherNames);
-        if (root.lesson.auditories && root.lesson.auditories.length > 0) parts.push("Аудитории: " + root.lesson.auditories.join(", "));
-        if (root.lesson.note) parts.push("Заметка: " + root.lesson.note);
+        if (root.lesson.typeAbbrev) {
+            var fullTypeName = Logic.I18N[root.lang] && Logic.I18N[root.lang]["type" + root.lesson.typeAbbrev]
+                ? Logic.I18N[root.lang]["type" + root.lesson.typeAbbrev]
+                : root.lesson.typeAbbrev;
+            parts.push(fullTypeName);
+        }
+        if (root.lesson.teacherNames) parts.push(Logic.tr("teacherLabel", root.lang) + ": " + root.lesson.teacherNames);
+        if (root.lesson.auditories && root.lesson.auditories.length > 0) parts.push(Logic.tr("auditoryLabel", root.lang) + ": " + root.lesson.auditories.join(", "));
+        if (root.lesson.note) parts.push(Logic.tr("noteLabel", root.lang) + ": " + root.lesson.note);
         return parts.join("\n");
     }
-    QQC2.ToolTip.delay: 500
+    QQC2.ToolTip.delay: 400
 
     MouseArea {
         id: hoverArea
