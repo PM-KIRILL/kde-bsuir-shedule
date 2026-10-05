@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "ScheduleLogic.js" as Logic
 
 Item {
     id: root
@@ -8,8 +9,10 @@ Item {
     property bool allDone: false
     property string holidayName: ""
     property string dateLabel: ""
-    property string noClassesText: i18n("Занятий нет")
-    property string allDoneText: i18n("Все занятия на сегодня завершены")
+    property string lang: "ru"
+
+    property string noClassesText: Logic.tr("noClasses", root.lang)
+    property string allDoneText: Logic.tr("allDone", root.lang)
 
     implicitHeight: 120
     implicitWidth: 200

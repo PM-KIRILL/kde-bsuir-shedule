@@ -1,21 +1,191 @@
 .pragma library
 
-// ─── Colors ──────────────────────────────────────────────────
-var LESSON_TYPE_COLORS = {
-    "ПЗ": "#8E5CD9",          // Purple
-    "ЛР": "#F08A24",          // Orange
+// ─── Translations & Localization ─────────────────────────────
+var I18N = {
+    ru: {
+        code: "ru",
+        name: "Русский",
+        scheduleTitle: "Расписание БГУИР",
+        weekLabel: "Неделя",
+        noClasses: "Занятий нет",
+        allDone: "Все занятия на сегодня завершены",
+        subgroupShort: "п/г",
+        subgroupFull: "подгруппа",
+        now: "Сейчас",
+        next: "Далее",
+        today: "Сегодня",
+        tomorrow: "Завтра",
+        refresh: "Обновить расписание",
+        loading: "Загрузка расписания...",
+        retry: "Повторить",
+        errorEmptyGroup: "Укажите номер группы в настройках",
+        errorNotFound: "Группа %1 не найдена",
+        errorServer: "Ошибка сервера БГУИР (код %1)",
+        errorTimeout: "Таймаут подключения к серверу БГУИР",
+        errorNetwork: "Не удалось подключиться к серверу БГУИР",
+        typeLK: "Лекция",
+        typeLR: "Лабораторная работа",
+        typePZ: "Практическое занятие",
+        typeExam: "Экзамен",
+        typeConsultation: "Консультация",
+        teacherLabel: "Преподаватель",
+        auditoryLabel: "Аудитория",
+        noteLabel: "Заметка",
+        daysShort: ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"],
+        daysFull: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
+        months: [
+            "января", "февраля", "марта", "апреля", "мая", "июня",
+            "июля", "августа", "сентября", "октября", "ноября", "декабря"
+        ],
+        holidays: {
+            "1-1": "Новый год",
+            "1-7": "Рождество (православное)",
+            "3-8": "День женщин",
+            "5-1": "Праздник труда",
+            "5-9": "День Победы",
+            "7-3": "День Независимости",
+            "11-7": "День Октябрьской революции",
+            "12-25": "Рождество (католическое)"
+        }
+    },
+    be: {
+        code: "be",
+        name: "Беларуская",
+        scheduleTitle: "Расклад БДУІР",
+        weekLabel: "Тыдзень",
+        noClasses: "Няма заняткаў",
+        allDone: "На сёння заняткаў больш няма",
+        subgroupShort: "п/г",
+        subgroupFull: "падгрупа",
+        now: "Зараз",
+        next: "Далей",
+        today: "Сёння",
+        tomorrow: "Заўтра",
+        refresh: "Абнавіць расклад",
+        loading: "Загрузка раскладу...",
+        retry: "Паўтарыць",
+        errorEmptyGroup: "Пазначце нумар групы ў наладах",
+        errorNotFound: "Група %1 не знойдзена",
+        errorServer: "Памылка сервера БДУІР (код %1)",
+        errorTimeout: "Таймаўт падключэння да сервера БДУІР",
+        errorNetwork: "Не атрымалася падключыцца да сервера БДУІР",
+        typeLK: "Лекцыя",
+        typeLR: "Лабараторная работа",
+        typePZ: "Практычны занятак",
+        typeExam: "Экзамен",
+        typeConsultation: "Кансультацыя",
+        teacherLabel: "Выкладчык",
+        auditoryLabel: "Аўдыторыя",
+        noteLabel: "Нататка",
+        daysShort: ["НД", "ПН", "АЎ", "СР", "ЧЦ", "ПТ", "СБ"],
+        daysFull: ["Нядзеля", "Панядзелак", "Аўторак", "Серада", "Чацвер", "Пятніца", "Субота"],
+        months: [
+            "студзеня", "лютага", "сакавіка", "красавіка", "мая", "чэрвеня",
+            "ліпеня", "жніўня", "верасня", "кастрычніка", "лістапада", "снежня"
+        ],
+        holidays: {
+            "1-1": "Новы год",
+            "1-7": "Раство Хрыстова (праваслаўнае)",
+            "3-8": "Дзень жанчын",
+            "5-1": "Свята працы",
+            "5-9": "Дзень Перамогі",
+            "7-3": "Дзень Незалежнасці",
+            "11-7": "Дзень Кастрычніцкай рэвалюцыі",
+            "12-25": "Раство Хрыстова (каталіцкае)"
+        }
+    },
+    en: {
+        code: "en",
+        name: "English",
+        scheduleTitle: "BSUIR Schedule",
+        weekLabel: "Week",
+        noClasses: "No classes",
+        allDone: "No more classes for today",
+        subgroupShort: "sub",
+        subgroupFull: "subgroup",
+        now: "Now",
+        next: "Next",
+        today: "Today",
+        tomorrow: "Tomorrow",
+        refresh: "Refresh schedule",
+        loading: "Loading schedule...",
+        retry: "Retry",
+        errorEmptyGroup: "Specify group number in settings",
+        errorNotFound: "Group %1 not found",
+        errorServer: "BSUIR server error (code %1)",
+        errorTimeout: "Connection timed out to BSUIR server",
+        errorNetwork: "Failed to connect to BSUIR server",
+        typeLK: "Lecture",
+        typeLR: "Laboratory work",
+        typePZ: "Practical class",
+        typeExam: "Exam",
+        typeConsultation: "Consultation",
+        teacherLabel: "Instructor",
+        auditoryLabel: "Room",
+        noteLabel: "Note",
+        daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        daysFull: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        months: [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ],
+        holidays: {
+            "1-1": "New Year's Day",
+            "1-7": "Orthodox Christmas",
+            "3-8": "Women's Day",
+            "5-1": "Labor Day",
+            "5-9": "Victory Day",
+            "7-3": "Independence Day",
+            "11-7": "October Revolution Day",
+            "12-25": "Catholic Christmas"
+        }
+    }
+};
+
+function getLanguage(langCode, systemLocale) {
+    if (langCode === "ru" || langCode === "be" || langCode === "en") {
+        return langCode;
+    }
+    var loc = (systemLocale || (typeof Qt !== "undefined" && Qt.locale ? Qt.locale().name : "ru")).toLowerCase();
+    if (loc.indexOf("be") === 0) return "be";
+    if (loc.indexOf("en") === 0) return "en";
+    return "ru";
+}
+
+function tr(key, lang, param) {
+    var l = lang || "ru";
+    var dict = I18N[l] || I18N.ru;
+    var str = dict[key] || I18N.ru[key] || key;
+    if (param !== undefined) {
+        str = str.replace("%1", param);
+    }
+    return str;
+}
+
+// ─── Default Colors ──────────────────────────────────────────
+var DEFAULT_LESSON_COLORS = {
     "ЛК": "#3FB36F",          // Green
+    "УЛк": "#3FB36F",
+    "ЛР": "#F08A24",          // Orange
+    "ПЗ": "#8E5CD9",          // Purple
+    "УПз": "#8E5CD9",
     "Консультация": "#32ADE6",// Light Blue
-    "Экзамен": "#FF3B30",     // Red
-    "УПз": "#8E5CD9",         // Supervised practical
-    "УЛк": "#3FB36F"          // Supervised lecture
+    "Экзамен": "#FF3B30"      // Red
 };
 
 var FALLBACK_LESSON_COLOR = "#9A9A9E";
 
-function getLessonAccentColor(type) {
+function getLessonAccentColor(type, overrides) {
     if (!type) return FALLBACK_LESSON_COLOR;
-    return LESSON_TYPE_COLORS[type] || FALLBACK_LESSON_COLOR;
+    if (overrides) {
+        if ((type === "ЛК" || type === "УЛк") && overrides.colorLK) return overrides.colorLK;
+        if (type === "ЛР" && overrides.colorLR) return overrides.colorLR;
+        if ((type === "ПЗ" || type === "УПз") && overrides.colorPZ) return overrides.colorPZ;
+        if (type === "Экзамен" && overrides.colorExam) return overrides.colorExam;
+        if (type === "Консультация" && overrides.colorConsultation) return overrides.colorConsultation;
+        if (overrides[type]) return overrides[type];
+    }
+    return DEFAULT_LESSON_COLORS[type] || FALLBACK_LESSON_COLOR;
 }
 
 var COLOR_BLUE = "#0A84FF";   // Today
@@ -50,12 +220,6 @@ function getPalette(themeMode, isSystemDark) {
 }
 
 // ─── Date & Time Helpers ─────────────────────────────────────
-var DAY_NAMES_SHORT = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
-var MONTH_NAMES = [
-    "января", "февраля", "марта", "апреля", "мая", "июня",
-    "июля", "августа", "сентября", "октября", "ноября", "декабря"
-];
-
 var DAY_NAME_TO_DOW = {
     "Воскресенье": 0,
     "Понедельник": 1,
@@ -70,9 +234,11 @@ var DOW_TO_DAY_NAME = [
     "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"
 ];
 
-function formatDayLabel(date) {
-    var dow = DAY_NAMES_SHORT[date.getDay()] || "";
-    var m = MONTH_NAMES[date.getMonth()] || "";
+function formatDayLabel(date, lang) {
+    var l = lang || "ru";
+    var dict = I18N[l] || I18N.ru;
+    var dow = dict.daysShort[date.getDay()] || "";
+    var m = dict.months[date.getMonth()] || "";
     return dow + ", " + date.getDate() + " " + m;
 }
 
@@ -168,27 +334,11 @@ function getTeacherInitials(emp) {
     return (l + f) || "?";
 }
 
-// ─── Holidays ────────────────────────────────────────────────
-var FIXED_HOLIDAYS = [
-    { month: 1, day: 1, name: "Новый год" },
-    { month: 1, day: 7, name: "Рождество (православное)" },
-    { month: 3, day: 8, name: "День женщин" },
-    { month: 5, day: 1, name: "День труда" },
-    { month: 5, day: 9, name: "День Победы" },
-    { month: 7, day: 3, name: "День Независимости" },
-    { month: 11, day: 7, name: "День Октябрьской революции" },
-    { month: 12, day: 25, name: "Рождество (католическое)" }
-];
-
-function findHolidayName(date) {
-    var m = date.getMonth() + 1;
-    var d = date.getDate();
-    for (var i = 0; i < FIXED_HOLIDAYS.length; i++) {
-        if (FIXED_HOLIDAYS[i].month === m && FIXED_HOLIDAYS[i].day === d) {
-            return FIXED_HOLIDAYS[i].name;
-        }
-    }
-    return null;
+function findHolidayName(date, lang) {
+    var l = lang || "ru";
+    var dict = I18N[l] || I18N.ru;
+    var key = (date.getMonth() + 1) + "-" + date.getDate();
+    return dict.holidays[key] || null;
 }
 
 // ─── Schedule Normalization ──────────────────────────────────
@@ -196,15 +346,15 @@ function lessonIsMine(numSubgroup, userSubgroup) {
     return userSubgroup === 0 || numSubgroup === 0 || numSubgroup === userSubgroup;
 }
 
-function normalizeLesson(lessonRaw, date, week, dayName, dayIndex, userSubgroup) {
+function normalizeLesson(lessonRaw, date, week, dayName, dayIndex, userSubgroup, colorOverrides, lang) {
     var numSubgroup = lessonRaw.numSubgroup || 0;
     var isMine = lessonIsMine(numSubgroup, userSubgroup);
     var typeAbbrev = lessonRaw.lessonTypeAbbrev || null;
-    var accentColor = getLessonAccentColor(typeAbbrev);
+    var accentColor = getLessonAccentColor(typeAbbrev, colorOverrides);
+    var l = lang || "ru";
 
     var teachers = [];
     var teacherPhotos = [];
-    var teacherInitialsList = [];
     var teacherNamesList = [];
 
     if (lessonRaw.employees && lessonRaw.employees.length > 0) {
@@ -221,7 +371,6 @@ function normalizeLesson(lessonRaw, date, week, dayName, dayIndex, userSubgroup)
                 initials: initials
             });
             if (photo) teacherPhotos.push(photo);
-            teacherInitialsList.push(initials);
             teacherNamesList.push(shortName);
         }
     }
@@ -259,7 +408,7 @@ function normalizeLesson(lessonRaw, date, week, dayName, dayIndex, userSubgroup)
     };
 }
 
-function flattenSchedule(scheduleDto, currentWeek, today, userSubgroup) {
+function flattenSchedule(scheduleDto, currentWeek, today, userSubgroup, colorOverrides, lang) {
     if (!scheduleDto) return [];
 
     var effectiveSchedules = (scheduleDto.schedules && Object.keys(scheduleDto.schedules).length > 0)
@@ -293,7 +442,7 @@ function flattenSchedule(scheduleDto, currentWeek, today, userSubgroup) {
                 var singleDate = parseBsuirDate(lesson.dateLesson);
                 if (!singleDate || singleDate < todayStart) continue;
                 var singleWeek = computeWeekForDate(singleDate, todayStart, currentWeek);
-                out.push(normalizeLesson(lesson, singleDate, singleWeek, dayName, dayIndex, userSubgroup));
+                out.push(normalizeLesson(lesson, singleDate, singleWeek, dayName, dayIndex, userSubgroup, colorOverrides, lang));
                 continue;
             }
 
@@ -310,7 +459,7 @@ function flattenSchedule(scheduleDto, currentWeek, today, userSubgroup) {
                 if (cursor.getTime() >= todayStart.getTime()) {
                     var week = computeWeekForDate(cursor, todayStart, currentWeek);
                     if (lessonWeeks.indexOf(week) !== -1) {
-                        out.push(normalizeLesson(lesson, cursor, week, dayName, dayIndex, userSubgroup));
+                        out.push(normalizeLesson(lesson, cursor, week, dayName, dayIndex, userSubgroup, colorOverrides, lang));
                     }
                 }
                 cursor = addDays(cursor, 7);
@@ -327,7 +476,7 @@ function flattenSchedule(scheduleDto, currentWeek, today, userSubgroup) {
             if (!examDate || examDate < todayStart) continue;
             var examDayName = DOW_TO_DAY_NAME[examDate.getDay()] || "";
             var examWeek = computeWeekForDate(examDate, todayStart, currentWeek);
-            out.push(normalizeLesson(exam, examDate, examWeek, examDayName, e, userSubgroup));
+            out.push(normalizeLesson(exam, examDate, examWeek, examDayName, e, userSubgroup, colorOverrides, lang));
         }
     }
 
@@ -340,7 +489,7 @@ function flattenSchedule(scheduleDto, currentWeek, today, userSubgroup) {
     return out;
 }
 
-function groupLessonsByDay(lessons) {
+function groupLessonsByDay(lessons, lang) {
     var daysMap = {};
     var daysList = [];
 
@@ -354,8 +503,8 @@ function groupLessonsByDay(lessons) {
                 dayOfWeek: lesson.date.getDay(),
                 dayOfMonth: lesson.date.getDate(),
                 month: lesson.date.getMonth(),
-                dayLabel: formatDayLabel(lesson.date),
-                holidayName: findHolidayName(lesson.date),
+                dayLabel: formatDayLabel(lesson.date, lang),
+                holidayName: findHolidayName(lesson.date, lang),
                 lessons: []
             };
             daysMap[iso] = dayObj;
@@ -368,30 +517,31 @@ function groupLessonsByDay(lessons) {
 }
 
 // ─── Display Resolution ──────────────────────────────────────
-function resolveDisplay(scheduleDto, currentWeek, userSubgroup, showPastLessons) {
+function resolveDisplay(scheduleDto, currentWeek, userSubgroup, showPastLessons, colorOverrides, lang) {
     var now = new Date();
     var todayStart = startOfLocalDay(now);
     var todayISO = toDateISO(now);
     var currentMins = nowMinutes();
+    var l = lang || "ru";
 
     if (!scheduleDto) {
         return {
             hasData: false,
             lessons: [],
             displayDate: now,
-            dateLabel: formatDayLabel(now),
+            dateLabel: formatDayLabel(now, l),
             dateColor: COLOR_BLUE,
             groupName: "",
             currentWeek: currentWeek || 1,
             isNextDay: false,
             allDone: false,
-            holidayName: findHolidayName(now)
+            holidayName: findHolidayName(now, l)
         };
     }
 
     var groupName = (scheduleDto.studentGroupDto && scheduleDto.studentGroupDto.name) || "";
-    var allLessons = flattenSchedule(scheduleDto, currentWeek, now, userSubgroup);
-    var days = groupLessonsByDay(allLessons);
+    var allLessons = flattenSchedule(scheduleDto, currentWeek, now, userSubgroup, colorOverrides, l);
+    var days = groupLessonsByDay(allLessons, l);
 
     var todayDay = null;
     var nextDay = null;
@@ -408,9 +558,9 @@ function resolveDisplay(scheduleDto, currentWeek, userSubgroup, showPastLessons)
     if (todayDay) {
         var remaining = [];
         for (var r = 0; r < todayDay.lessons.length; r++) {
-            var l = todayDay.lessons[r];
-            if (showPastLessons || minutesFromTime(l.endTime) > currentMins) {
-                remaining.push(l);
+            var item = todayDay.lessons[r];
+            if (showPastLessons || minutesFromTime(item.endTime) > currentMins) {
+                remaining.push(item);
             }
         }
 
@@ -481,12 +631,78 @@ function resolveDisplay(scheduleDto, currentWeek, userSubgroup, showPastLessons)
         hasData: true,
         lessons: [],
         displayDate: now,
-        dateLabel: formatDayLabel(now),
+        dateLabel: formatDayLabel(now, l),
         dateColor: COLOR_BLUE,
         groupName: groupName,
         currentWeek: currentWeek,
         isNextDay: false,
         allDone: false,
-        holidayName: findHolidayName(now)
+        holidayName: findHolidayName(now, l)
     };
+}
+
+// ─── Mock Data for Live Preview in Settings ───────────────────
+function getMockLessons(colorOverrides, lang) {
+    var l = lang || "ru";
+    var isBe = l === "be";
+    var isEn = l === "en";
+
+    return [
+        {
+            key: "mock_1",
+            subject: isEn ? "Computer Networks" : (isBe ? "Камп'ютарныя сеткі" : "Компьютерные сети"),
+            subjectFullName: isEn ? "Computer Networks & Telecommunications" : (isBe ? "Камп'ютарныя сеткі і тэлекамунікацыі" : "Компьютерные сети и телекоммуникации"),
+            typeAbbrev: "ЛК",
+            typeColorHex: getLessonAccentColor("ЛК", colorOverrides),
+            startTime: "09:00",
+            endTime: "10:25",
+            auditories: ["412-4 к."],
+            auditoryText: " · 412-4 к.",
+            numSubgroup: 0,
+            isMine: true,
+            note: isEn ? "Bring laboratory reports" : (isBe ? "Прынесці справаздачы" : "Принести отчёты по лабам"),
+            teachers: [
+                { id: 1, name: isEn ? "Ivanov I." : "Иванов И. И.", fullName: "Иванов Иван Иванович", photoUrl: "", initials: "ИИ" }
+            ],
+            teacherPhotos: [],
+            teacherNames: isEn ? "Ivanov I. I." : "Иванов И. И.",
+            studentGroups: []
+        },
+        {
+            key: "mock_2",
+            subject: isEn ? "Operating Systems" : (isBe ? "Аперацыйныя сістэмы" : "Операционные системы"),
+            subjectFullName: isEn ? "Operating Systems & System Programming" : (isBe ? "Аперацыйныя сістэмы і сістэмнае праграмаванне" : "Операционные системы и системное программирование"),
+            typeAbbrev: "ЛР",
+            typeColorHex: getLessonAccentColor("ЛР", colorOverrides),
+            startTime: "10:40",
+            endTime: "12:05",
+            auditories: ["208-4 к."],
+            auditoryText: " · 208-4 к.",
+            numSubgroup: 1,
+            isMine: true,
+            note: null,
+            teachers: [],
+            teacherPhotos: [],
+            teacherNames: isEn ? "Petrov P. P." : "Петров П. П.",
+            studentGroups: []
+        },
+        {
+            key: "mock_3",
+            subject: isEn ? "Mathematical Analysis" : (isBe ? "Матэматычны аналіз" : "Математический анализ"),
+            subjectFullName: isEn ? "Higher Mathematics & Mathematical Analysis" : (isBe ? "Вышэйшая матэматыка" : "Высшая математика и математический анализ"),
+            typeAbbrev: "ПЗ",
+            typeColorHex: getLessonAccentColor("ПЗ", colorOverrides),
+            startTime: "12:20",
+            endTime: "13:45",
+            auditories: ["301-1 к."],
+            auditoryText: " · 301-1 к.",
+            numSubgroup: 2,
+            isMine: false,
+            note: null,
+            teachers: [],
+            teacherPhotos: [],
+            teacherNames: isEn ? "Sidorov S. S." : "Сидоров С. С.",
+            studentGroups: []
+        }
+    ];
 }
