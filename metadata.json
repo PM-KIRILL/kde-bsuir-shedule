@@ -1,0 +1,30 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "PM-KIRILL",
+                "Website": "https://github.com/PM-KIRILL"
+            },
+            {
+                "Name": "Konstantsin Betenya (Bsuir Time Original UI & Core)",
+                "Website": "https://github.com/vazonhub/bsuir-schedule"
+            }
+        ],
+        "BugReportUrl": "https://github.com/PM-KIRILL/kde-bsuir-shedule/issues",
+        "Category": "Utilities",
+        "Description": "Виджет расписания занятий БГУИР для KDE Plasma 6 на базе Bsuir Time",
+        "Description[en]": "BSUIR class schedule widget for KDE Plasma 6 based on Bsuir Time",
+        "Description[ru]": "Виджет расписания занятий БГУИР для KDE Plasma 6 на базе Bsuir Time",
+        "EnabledByDefault": true,
+        "Icon": "view-calendar-timeline",
+        "Id": "org.kde.plasma.bsuirschedule",
+        "License": "MIT",
+        "Name": "BSUIR Schedule",
+        "Name[en]": "BSUIR Schedule",
+        "Name[ru]": "Расписание БГУИР",
+        "Version": "1.0.0",
+        "Website": "https://github.com/PM-KIRILL/kde-bsuir-shedule"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}
