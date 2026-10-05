@@ -9,7 +9,7 @@ KCM.SimpleKCM {
 
     property alias cfg_groupNumber: groupField.text
     property alias cfg_subgroup: subgroupCombo.currentIndex
-    property alias cfg_themeMode: themeModeCombo.currentIndex
+    property string cfg_language: langCombo.model[langCombo.currentIndex].code
     property int cfg_autoRefreshInterval: intervalCombo.model[intervalCombo.currentIndex].value
     property alias cfg_showPastLessons: pastCheck.checked
 
@@ -33,13 +33,24 @@ KCM.SimpleKCM {
         }
 
         QQC2.ComboBox {
-            id: themeModeCombo
-            Kirigami.FormData.label: i18n("Тема оформления:")
+            id: langCombo
+            Kirigami.FormData.label: i18n("Язык интерфейса:")
+            textRole: "text"
             model: [
-                i18n("Как в системе (Plasma)"),
-                i18n("Тёмная (Dark)"),
-                i18n("Светлая (Light)")
+                { text: i18n("Авто (системный)"), code: "auto" },
+                { text: "Русский", code: "ru" },
+                { text: "Беларуская", code: "be" },
+                { text: "English", code: "en" }
             ]
+            Component.onCompleted: {
+                var cur = Plasmoid.configuration.language || "auto";
+                for (var i = 0; i < model.length; ++i) {
+                    if (model[i].code === cur) {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+            }
             Layout.fillWidth: true
         }
 
